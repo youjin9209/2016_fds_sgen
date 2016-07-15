@@ -1,0 +1,137 @@
+<body>
+  <div class = "report-header" style = "margin-top: -30px; margin-bottom: 10px; background-color: #757677; height: 150px;">
+    <p style="color: #ECEAEC; font-size: 30px; text-align: center; margin-bottom: -15px;"> TODAYs REPORT </p>
+    <table style="text-align: center;">
+      <tbody>
+        <tr>
+          <td>
+            <div class ="doubt-transaction" style ="color: #FEFDFF; text-align: center;">  
+              <div id = "doubt-counter" style="font-size: 35px"> 114건 </div>
+              <div class = "doubt-notice" style="font-size: 20px;" >의심거래</div>
+            </div>
+          </td>
+          <td>
+            <div class ="abnormal-transaction" style ="color: #FEFDFF; text-align: center;">  
+              <div id = "abnormal-counter" style="font-size: 35px; color: #E45357"> 04건 </div>
+              <div class = "abnormal-notice" style="color: #E45357; font-size: 20px;">이상거래</div>
+            </div>
+          </td>
+          <td>
+            <div class ="Secondary-confirmation-transaction" style ="color: #FEFDFF; text-align: center;">  
+              <div id = "Secondary-confirmation-counter" style="font-size: 35px"> 12건 </div>
+              <div class = "Secondary-confirmation-notice" style="font-size: 20px;">2차확인 거래</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a href= "/sgen_admin/doubt_detail" class="btn-floating btn-large waves-effect waves-light red" style="margin-top: -150px;"><i class="material-icons">add</i></a>
+  </div>
+
+  <table>
+    <tbody>
+      <tr>
+        <td style ="background-color: #E4E5E6">
+          <p style="font-size: 25px; color: #757677; font-style: bold; text-align:center"> 이상거래 통계 </p>
+          <p style="color: #757677; font-style: bold; text-align:center"><i class="material-icons">assignment</i>이상거래 종류별 통계</p>
+          <canvas id="secondChart" style="margin-left: 50px;"></canvas> 
+          <script>
+            var ctx = document.getElementById("secondChart");
+            var data = {
+              labels: ["전자제품", "뷰티제품", "유흥주점", "편의점", "식료품", "의류", "귀금속"],
+              datasets: [
+                {    
+                  label: "My First dataset",
+                  backgroundColor: "rgba(179,181,198,0.2)",
+                  borderColor: "rgba(179,181,198,1)",
+                  pointBackgroundColor: "rgba(179,181,198,1)",
+                  pointBorderColor: "#fff",
+                  pointHoverBackgroundColor: "#fff",
+                  pointHoverBorderColor: "rgba(179,181,198,1)",
+                  data: [65, 59, 90, 81, 56, 55, 40]
+                },
+                {
+                  label: "My Second dataset",
+                  backgroundColor: "rgba(255,99,132,0.2)",
+                  borderColor: "rgba(255,99,132,1)",
+                  pointBackgroundColor: "rgba(255,99,132,1)",
+                  pointBorderColor: "#fff",
+                  pointHoverBackgroundColor: "#fff",
+                  pointHoverBorderColor: "rgba(255,99,132,1)",
+                  data: [28, 48, 40, 19, 96, 27, 100]
+                }
+              ]
+            };
+            var myRadarChart = new Chart(ctx, {
+              type: 'radar',
+              data: data,
+              options: {
+              scale: {
+                reverse: true,
+                ticks: {
+                    beginAtZero: true
+                }
+              }
+            }
+          });
+          </script>
+          <p style="color: #757677; font-style: bold; text-align:center"><i class="material-icons">my_location</i> 국가별 통계</p>
+          <canvas id="myChart" style="margin-left: 40px;"></canvas>  
+          <script>
+            var ctx = document.getElementById("myChart");
+            var data = {
+              datasets: [{
+                data: [<%= @counterKorea %>, 16, 7, 3, 14],
+                backgroundColor: [
+                  "rgba(255,99,132,0.4)", "rgba(75, 192, 192, 0.4)", "rgba(255, 206, 86, 0.4)", "rgba(191, 0, 255, 0.4)", "rgba(54, 162, 235, 0.4)"
+                ],
+                pointBackgroundColor: [
+                  "rgba(255,99,132,1)", "rgba(75, 192, 192, 1)", "rgba(255, 206, 86, 1)", "rgba(191, 0, 255, 1)", "rgba(54, 162, 235, 1)"
+                ],
+                label: 'My dataset' // for legend
+              }],
+              labels: ["대한민국", "일본", "중국", "프랑스", "인도"]
+            };
+            var myChart = new Chart(ctx, {
+              data: data,
+              type: "polarArea",
+              options: {
+                elements: {
+                    arc: {
+                        //borderColor: ["rgba(255,99,132,1)", "rgba(179,181,198,1)" ]
+                  }
+                }
+              }
+            });
+          </script>
+        </td>
+        <td style ="background-color: #E4E5E6">
+          <p style="font-size: 25px; color: #757677; font-style: bold; text-align:center; margin-top:-150px; margin-left: -50px;">실시간 거래내역 </p>
+          <p style="text-align: right"> 현재시각: <%= @real  %> </p>
+          <table class= "bordered responsive-table highlight striped centered">
+            <thead>
+              <tr>
+                <th data-field="id" >결제시간</th>
+                <th data-field="name">은행 / 지불계좌</th>
+                <th data-field="price">금액</th>
+                <th data-field="location">국가</th>
+                <th data-field="usercode">사용자코드</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @transaction.each do |x| %>
+              <tr>
+                <td><%= x.created_at %></td>
+                <td><%= x.account %></td>
+                <td><%= x.money %> 원</td>
+                <td><%= x.location %></td>
+                <td><%= x.user_code %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
